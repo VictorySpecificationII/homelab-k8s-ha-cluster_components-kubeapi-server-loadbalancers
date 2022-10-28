@@ -1,0 +1,110 @@
+- hosts: frontendloadbalancers
+  become: true
+  tasks:
+
+    - name: Update repositories cache and install HAProxy package
+      apt:
+        name: haproxy
+        update_cache: yes
+
+    - name: Stop service HAProxy
+      systemd:
+        name: haproxy
+        state: stopped
+
+    - name: "Create configuration file for HAProxy"
+      template:
+        src: templates/haproxy.conf.yaml.j2
+        dest: /etc/haproxy/haproxy.cfg
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: "Enable service HAProxy on boot and ensure it is not masked"
+      systemd:
+        name: haproxy
+        enabled: yes
+        masked: no
+
+    - name: "Restart service HAProxy and issue daemon-reload to pick up config changes"
+      systemd:
+        name: haproxy
+        state: restarted
+        daemon_reload: yes
+
+    - name: Update repositories cache and install Keepalived package
+      apt:
+        name: keepalived
+        update_cache: no
+
+    - name: Update repositories cache and install psmisc package
+      apt:
+        name: psmisc
+        update_cache: no
+
+- hosts: frontendloadbalancers[0]
+  become: true
+  gather_facts: yes
+  vars_files: variables.yaml
+  tasks:
+
+#    - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
+
+#    - debug: var=ansible_facts
+
+    - name: "Stop service keepalived on the first load balancer"
+      systemd:
+        name: keepalived
+        state: stopped
+
+    - name: "Create configuration file for Keepalived"
+      template:
+        src: templates/keepalived_master.conf.yaml.j2
+        dest: /etc/keepalived/keepalived.conf
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: "Enable service keepalived on boot and ensure it is not masked"
+      systemd:
+        name: keepalived
+        enabled: yes
+        masked: no
+
+    - name: "Restart service keepalived and issue daemon-reload to pick up config changes"
+      systemd:
+        name: keepalived
+        state: restarted
+        daemon_reload: yes
+
+
+- hosts: frontendloadbalancers[1]
+  become: true
+  gather_facts: yes
+  vars_files: variables.yaml
+  tasks:
+
+    - name: "Stop service keepalived on the second load balancer"
+      systemd:
+        name: keepalived
+        state: stopped
+
+    - name: "Create configuration file for Keepalived"
+      template:
+        src: templates/keepalived_backup.conf.yaml.j2
+        dest: /etc/keepalived/keepalived.conf
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: "Enable service keepalived on boot and ensure it is not masked"
+      systemd:
+        name: keepalived
+        enabled: yes
+        masked: no
+
+    - name: "Restart service keepalived and issue daemon-reload to pick up config changes"
+      systemd:
+        name: keepalived
+        state: restarted
+        daemon_reload: yes
