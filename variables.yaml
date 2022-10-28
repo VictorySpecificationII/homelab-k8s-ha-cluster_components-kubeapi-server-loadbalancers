@@ -1,2 +1,4 @@
 virtualIP: 10.250.200.134
 CIDR: 8
+haproxyuser: admin
+haproxypass: password

@@ -147,6 +147,7 @@
 - hosts: frontendloadbalancers, kubeapiservers
   become: true
   gather_facts: yes
+  vars_files: variables.yaml
   tasks:
 
     - name: Test hosts list for HAProxy configuration step
