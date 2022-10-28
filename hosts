@@ -2,3 +2,10 @@
 set1-kube-lb-01 ansible_host=10.98.68.11 ansible_user=root
 set2-kube-lb-01 ansible_host=10.98.68.21 ansible_user=root
 set3-kube-lb-01 ansible_host=10.98.68.31 ansible_user=root
+
+#Put your master nodes here
+[kubeapiservers]
+set1-kube-master-01 ansible_host=10.98.64.11 ansible_user=root
+set2-kube-master-01 ansible_host=10.98.64.21 ansible_user=root
+set3-kube-master-01 ansible_host=10.98.64.31 ansible_user=root
+

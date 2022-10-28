@@ -1,6 +1,14 @@
 - hosts: frontendloadbalancers
   become: true
+  gather_facts: yes
   tasks:
+
+    - name: Test hosts list
+      debug:
+        msg: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+    - debug: var=ansible_all_ipv4_addresses
+    - debug: var=ansible_default_ipv4.address
 
     - name: Update repositories cache and install HAProxy package
       apt:
@@ -12,6 +20,17 @@
         name: haproxy
         state: stopped
 
+
+- hosts: frontendloadbalancers, kubeapiservers
+  become: true
+  gather_facts: yes
+  tasks:
+
+    - name: Test hosts list for HAProxy configuration step
+      debug:
+        msg: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+
+
     - name: "Create configuration file for HAProxy"
       template:
         src: templates/haproxy.conf.yaml.j2
@@ -19,6 +38,12 @@
         owner: root
         group: root
         mode: 0600
+      when: inventory_hostname in groups["frontendloadbalancers"]
+
+- hosts: frontendloadbalancers
+  become: true
+  gather_facts: yes
+  tasks:
 
     - name: "Enable service HAProxy on boot and ensure it is not masked"
       systemd:
@@ -47,10 +72,6 @@
   gather_facts: yes
   vars_files: variables.yaml
   tasks:
-
-#    - debug: var=hostvars[inventory_hostname]['ansible_default_ipv4']['address']
-
-#    - debug: var=ansible_facts
 
     - name: "Stop service keepalived on the first load balancer"
       systemd:
