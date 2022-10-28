@@ -18,14 +18,14 @@ defaults
         timeout server 50000
 
 listen stats
-    bind *:1936
+    bind *:1936 ssl crt /etc/ssl/private/server.pem
     mode   http
     option httplog
     stats enable
     stats uri /  # default: /haproxy?stats
    
 frontend kube-apiserver
-  bind *:6443
+  bind *:6443 ssl crt /etc/ssl/private/server.pem
   mode tcp
   option tcplog
   default_backend kube-apiserver

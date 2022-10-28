@@ -139,6 +139,10 @@
         group: root
         mode: 0600
 
+    - name: "Generate PEM file for HAProxy"
+      shell: cat server.key server.crt >> /etc/ssl/private/server.pem
+      args:
+        chdir: /etc/haproxy/ssl
 
 - hosts: frontendloadbalancers, kubeapiservers
   become: true
