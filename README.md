@@ -8,6 +8,7 @@ Developed for use with Ubuntu 22. Modify accordingly for other operating systems
 
  - Name your hosts in the hosts file with the same names you used in your Terraform files.
  - Modify the variables.yaml file to set your desired Virtual IP and CIDR.
+ - Modify the templates/haproxy* file and in the listener, define your user and password for the stats login page - currently on port 1936
  - In the templates/keepalived_* files, look for the "1111" string - that's a password. Use something secure.
  - Then run:
 
