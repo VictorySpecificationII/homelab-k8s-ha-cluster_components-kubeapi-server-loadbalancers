@@ -22,7 +22,7 @@ listen stats
     mode   http
     option httplog
     stats enable
-    stats auth {{ haproxyuser  }}:{{ haproxypass }}
+    stats auth admin:password
     stats uri /  # default: /haproxy?stats
    
 frontend kube-apiserver
