@@ -6,8 +6,8 @@ Developed for use with Ubuntu 22. Modify accordingly for other operating systems
 
 # Deployment
 
-    Name your hosts in the hosts file with the same names you used in your Terraform files.
-    Run:
+Name your hosts in the hosts file with the same names you used in your Terraform files.
+Then run:
 
 ```
 ansible-playbook -i hosts playbook.yaml -k
